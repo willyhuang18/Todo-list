@@ -1,9 +1,9 @@
 const express = require("express");
 const _ = require("lodash");
-const db = require('./config/connection');
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 const db = require('./config/connection');
+const mongoose = require('mongoose');
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
@@ -136,6 +136,5 @@ app.get("/about", function(req, res){
   db.once('open', () => {
     app.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
     })
   })
