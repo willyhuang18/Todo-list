@@ -41,7 +41,7 @@ const itemsSchema = {
   
   const List = mongoose.model("List", listSchema);
 
-  app.get("/", function(req, res) {
+app.get("/", function(req, res) {
 
     Item.find({}, function(err, foundItems){
   
@@ -59,9 +59,9 @@ const itemsSchema = {
       }
     });
   
-  });
+});
   
-  app.get("/:customListName", function(req, res){
+app.get("/:customListName", function(req, res){
     const customListName = _.capitalize(req.params.customListName);
   
     List.findOne({name: customListName}, function(err, foundList){
@@ -84,4 +84,25 @@ const itemsSchema = {
   
   
   
-  });
+});
+
+app.post("/", function(req, res){
+
+    const itemName = req.body.newItem;
+    const listName = req.body.list;
+  
+    const item = new Item({
+      name: itemName
+    });
+  
+    if (listName === "Today"){
+      item.save();
+      res.redirect("/");
+    } else {
+      List.findOne({name: listName}, function(err, foundList){
+        foundList.items.push(item);
+        foundList.save();
+        res.redirect("/" + listName);
+      });
+    }
+});
