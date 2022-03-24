@@ -1,16 +1,15 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
 const _ = require("lodash");
-
+const db = require('./config/connection');
 const app = express();
-
+const PORT = process.env.PORT || 3001;
+const db = require('./config/connection');
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://willy18:520LImeihua@cluster0.3fprr.mongodb.net/todolistDB", {useNewUrlParser: true});
+// mongoose.connect("mongodb+srv://willy18:520LImeihua@cluster0.3fprr.mongodb.net/todolistDB", {useNewUrlParser: true});
 
 const itemsSchema = {
     name: String
@@ -134,7 +133,9 @@ app.get("/about", function(req, res){
     res.render("about");
   });
   
-  app.listen(3000, function() {
-    console.log("Server started on port 3000");
-  });
-  
+  db.once('open', () => {
+    app.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+    })
+  })
